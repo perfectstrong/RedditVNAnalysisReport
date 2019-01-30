@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
+#%%
+######################################################
+# libraries
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.axes_grid1 import AxesGrid
+import math
+from scipy import stats
 
 #%%
 ######################################################
-## import and filter
+# import data and filter
 infile = "20170101T000000-20190101T000000.csv"
 df = pd.read_csv(infile, encoding="utf-8", index_col=None, header=0, lineterminator="\n")
 totalUnfiltered = df.shape[0]
@@ -40,11 +46,10 @@ for dtype in list(set(df.dtypes)):
 print("Usage of each column in MB")
 for colName, usageB in df.memory_usage(index=True, deep=True).items():
     print("{:<20} {:10.2f} MB".format(colName, usageB / 1024 ** 2))
+
 #%%
 ######################################################
 # preparation
-from mpl_toolkits.axes_grid1 import AxesGrid
-import math
 Nrow = 2
 Ncol = 4
 Noffset = 0
@@ -56,7 +61,7 @@ dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], co
 
 #%%
 ######################################################
-## hot subreddits
+# hot subreddits
 subs = r.index.nunique()
 print("Số subreddit được dịch: {:d}".format(subs))
 print("Số bài dịch mỗi sub trung bình: {:f}".format(float(r.mean())))
@@ -69,7 +74,7 @@ print("Số subreddit có trên 100 bài viết: {:d}. Tương đương {:.2f}% 
 
 #%%
 ######################################################
-## top translated subreddits
+# top translated subreddits
 N = 30
 rTop = r.head(N)
 y = np.arange(N)
@@ -87,7 +92,7 @@ plt.show()
 
 #%%
 ######################################################
-## top interested subreddits
+# top interested subreddits
 interests = df.groupby("r")["likes_count", "comments_count"].sum()
 interests["sum"] = interests["likes_count"] + interests["comments_count"]
 interests.sort_values(by="sum", ascending=False, inplace=True)
@@ -239,8 +244,7 @@ plt.show()
 
 #%%
 ######################################################
-## estimate distribution
-from scipy import stats
+# estimate distribution
 sc = 500
 reducedLikescount = df["likes_count"].copy() / sc
 l = np.arange(0, 4000 / sc, 100 / (sc * 2))
