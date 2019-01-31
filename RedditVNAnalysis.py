@@ -61,6 +61,36 @@ dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], co
 
 #%%
 ######################################################
+# posts by month
+df["created_time_utc"] = df["created_time"].dt.tz_convert('UTC')
+grouperAllByMonth = df.groupby(by=pd.Grouper(freq="M", key="created_time_utc"))
+allPostsByMonth = grouperAllByMonth["post_id"].size().fillna(0)
+allLikesByMonth = grouperAllByMonth["likes_count"].sum().fillna(0)
+
+fig = plt.figure()
+plt.title("Thống kê tổng số post và like", fontsize=24)
+monthLabels = allPostsByMonth.index.strftime("%m-%Y").tolist()
+ax1 = fig.add_subplot(111)
+ax1.plot(monthLabels, allPostsByMonth, "r-", label="Post")
+ax1.set_xlabel("Tháng", fontsize=16)
+ax1.set_ylabel("Số bài viết", fontsize=16)
+ax1.grid(True)
+ax2 = ax1.twinx()
+ax2.plot(monthLabels, allLikesByMonth, "b-", label="Like")
+ax2.set_ylabel("Số like", fontsize=16)
+fig.tight_layout()
+fig.autofmt_xdate()
+plt.tick_params(axis="both", labelsize=14)
+handles,labels = [],[]
+for ax in fig.axes:
+    for h,l in zip(*ax.get_legend_handles_labels()):
+        handles.append(h)
+        labels.append(l)
+plt.legend(handles, labels, loc="upper left")
+plt.show()
+
+#%%
+######################################################
 # hot subreddits
 subs = r.index.nunique()
 print("Số subreddit được dịch: {:d}".format(subs))
@@ -266,6 +296,13 @@ plt.show()
 translators = df[["user_raw_id", "user_name"]]
 translators.drop_duplicates(subset="user_raw_id", keep='first', inplace=True)
 translators.set_index("user_raw_id", inplace=True)
-print("Tổng số dịch giả: {:d}".format(len(translators)))
-
-translatorsStats = df.groupby(by="user_raw_id", values=["likes_count", "post_id"], aggfunc={"likes_count": [np.sum, np.mean], "post_id": [np.size, meanPostsPerWeek]}, fill_value=0)
+translatorsStats = df.pivot_table(index="user_raw_id", values=["likes_count", "post_id"], aggfunc={"likes_count": [np.sum, np.mean], "post_id": [np.size, meanPostsPerWeek]}, fill_value=0)
+print("Tổng số dịch giả: {:d}".format(translators.size))
+print("Mỗi dịch giả trung bình dịch {:.0f} bài.".format(totalFiltered / translators.size))
+print("Dịch giả chăm chỉ nhất: {:s} (https://facebook.com/{:d}) với {:d} bài.".format(translators.loc[translatorsStats[('post_id', 'size')].idxmax()]["user_name"], translatorsStats[('post_id', 'size')].idxmax(), translatorsStats[('post_id', 'size')].max()))
+print("Dịch giả dễ thương nhất: {:s} (https://facebook.com/{:d}) với tổng cộng {:d} like.".format(translators.loc[translatorsStats[('likes_count', 'sum')].idxmax()]["user_name"], translatorsStats[('likes_count', 'sum')].idxmax(), translatorsStats[('likes_count', 'sum')].max()))
+print("Dịch giả hay được cưng yêu nhất: {:s} (https://facebook.com/{:d}) với trung bình {:.0f} like mỗi bài.".format(translators.loc[translatorsStats[('likes_count', 'mean')].idxmax()]["user_name"], translatorsStats[('likes_count', 'mean')].idxmax(), translatorsStats[('likes_count', 'mean')].max()))
+postscountMarkpoints = [10, 20, 50, 100, 200]
+for i in postscountMarkpoints:
+    p = translatorsStats[translatorsStats[("post_id", "size")] >= i].count()[0]
+    print("{:d} dịch giả ({:.2%}) có {:d} bài dịch trở lên.".format(p, p / translators.size, i))

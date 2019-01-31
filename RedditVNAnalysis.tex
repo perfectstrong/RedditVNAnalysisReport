@@ -9,6 +9,7 @@
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage{indentfirst}
+\usepackage[section]{placeins}
 \newtheorem{remark}{Nhận xét}
 \author{Leopard Bethemel}
 \title{Phân tích mức độ tương tác của người dùng\\đối với bài dịch Reddit trên RedditVN}
@@ -168,9 +169,20 @@ Một giải pháp khắc phục là sử dụng hình minh họa bắt mắt đ
 \section{Xu thế đăng bài theo thời gian}
 Vì không có điều kiện gì khác, chúng ta sẽ giả sử rằng mọi bài viết trong dữ liệu đều được duyệt và các mod/admin không thiên vị khung giờ hay người đăng.
 
-\subsection{Mỗi tháng của từng sub}
+\subsection{Tổng quan}
 
-Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. Chúng ta sẽ quan sát số lượng post của 15 chủ đề được dịch nhiều nhất từ tháng 4/2017 đến tháng 12/2018.
+Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. Từ khi thành lập (tháng 4 / 2017), số lượng bài viết và tương tác tăng dần, mặc dầu có giảm một chút vào giai đoạn đầu năm 2018. 
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{img/AllLikesPostsOverTime.png}
+    \caption{Tổng số post và like qua từng tháng}
+    \label{fig:alllikespostsovertime}
+\end{figure}
+
+Tuy nhiên, đến tháng 10 và 11 cùng năm, từ vị trí cao nhất biểu đồ tính tới thời điểm ấy (khoảng 2800 post và 2800000 like), số bài viết và tương tác rớt dốc thê thảm xuống còn 1/5. Nguyên nhân vẫn chưa được xác định, song có thể phỏng đoán là do cuộc "Đại Thanh Trừng" khiến số lượng thành viên sụt giảm nghiêm trọng. (Cần kiểm chứng). May mắn thay, tháng tiếp theo, con số đã phục hồi và còn nhỉnh hơn lúc trước.
+
+\subsection{Mỗi tháng của từng sub}
+Chúng ta sẽ quan sát số lượng post của 15 chủ đề được dịch nhiều nhất từ tháng 4/2017 đến tháng 12/2018.
 
 \begin{figure}[h]
     \centering
@@ -180,8 +192,6 @@ Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. Ch
 \end{figure}
 
 Tuy số lượng tăng giảm không đều nhưng có thể thấy \textbf{askreddit} luôn chiếm vị trí số 1 trong danh sách những sub được chọn để dịch. Nhờ vào nhận xét \eqref{re:attentionandtranslation}, ta có thể suy ra \textbf{askreddit} sẽ nhận được lượng tương tác cực kỳ lớn.
-
-Mặc dầu vào cuối tháng 11, số lượng các bài giảm đột ngột xuống dưới 50 nhưng tháng tiếp theo đã kịp khôi phục. Nguyên nhân vẫn chưa được xác định, song có thể phỏng đoán là do cuộc "Đại Thanh Trừng" khiến số lượng thành viên sụt giảm nghiêm trọng. (Cần kiểm chứng)
 
 \subsection{Theo khung giờ}
 \subsubsection{Tổng thể}
@@ -207,7 +217,6 @@ Các sub nổi nhất nói chung đều tuân theo quy luật của tổng thể
 
 Ngoài ra, các sub khác đều tuân theo quy luật tổng thể. Nhưng chỉ có \textbf{askreddit} là đăng khá đồng đều giữa các khung giờ.
 
-\clearpage
 \section{Mức độ tương tác}
 Một khi đã biết xu hướng đăng bài của dịch giả, hãy cùng xem độc giả hưởng ứng thế nào.
 
@@ -235,16 +244,16 @@ Bài nhiều like nhất:
     \item 2 bài (0,01\%) đạt 8000 like trở lên.
 \end{itemize}
 
-Có ít hơn 5\% số bài viết đạt 4000 like trở lên, nên để khảo sát mật độ tập trung của like, chúng ta chỉ cần chú ý vào những bài viết 4000 like trở xuống.
-\begin{figure}[hb]
+\begin{figure}[!hb]
     \centering
     \includegraphics[width=\textwidth]{img/LikesDistribution.png}
     \caption{Phân bố like}
     \label{fig:likesdistribution}
 \end{figure}
+Có ít hơn 5\% số bài viết đạt 4000 like trở lên, nên để khảo sát mật độ tập trung của like, chúng ta chỉ cần chú ý vào những bài viết 4000 like trở xuống.
 
-Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507e-24 < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
-\begin{figure}[ht]
+Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507 \times 10^{-24} < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{img/FitLikesDistribution.png}
     \caption{Mô hình phân bố like}
@@ -253,7 +262,7 @@ Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. M�
 
 \subsection{Theo giờ đăng}
 \subsubsection{Tổng thể}
-\begin{figure}[ht]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/MeanLikesWeekdayHour.png}
     \caption{Like trung bình của post tính theo giờ đăng}
@@ -270,20 +279,43 @@ Trái ngược với xu hướng đăng bài, các bài đăng vào khoảng 4 �
 \end{remark}
 \subsubsection{Đối với các sub nổi nhất}
 Chúng ta sẽ tiếp tục mổ xẻ mức tương tác đối với từng sub nổi nhất.
-\begin{figure}[hb]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/MeanLikesWeekdayHourPerSub.png}
     \caption{Like trung bình tính theo giờ đăng của 8 sub nổi nhất}
     \label{fig:meanlikesweekdayhourpersub}
 \end{figure}
-\textbf{askreddit} tuy có số like trung bình theo giờ thấp (dưới 800), song mức tương tác lại trải đồng đều ban ngày và ban đêm cả tuần, trừ hai trường hợp cá biệt 3 giờ sáng thứ hai và 6 giờ sáng thứ ba. Tức \textbf{askreddit} không hoàn toàn tuân theo xu hướng tổng thể (hình \eqref{fig:meanlikesweekdayhour}). Nhìn theo hướng khác, tương tác của \textbf{askreddit} là ổn định. Ngoài ra, \textbf{writingprompts} và \textbf{explainlikeimfive} cũng theo xu hướng như thế.
 
-Mặc dù \textbf{nosleep} thường xuyên được post vào ban đêm và có số like khá khẩm hơn \textbf{askreddit}, số phản ứng lại đến nhiều hơn với những bài đăng ban ngày vào ban ngày. Quy tắc không thể hiện rõ nhưng có vài điểm cá biệt vào hai, tư và sáu. Phải chăng các độc giả sẽ ít sợ nút like vào ban ngày hơn?
+\textbf{askreddit} tuy có số like trung bình theo giờ thấp (dưới 800), song mức tương tác lại trải đồng đều ban ngày và ban đêm cả tuần, trừ hai trường hợp cá biệt 3 giờ sáng thứ hai và 6 giờ sáng thứ ba. Tức \textbf{askreddit} không hoàn toàn tuân theo xu hướng tổng thể (hình \eqref{fig:meanlikesweekdayhour}). Nhìn theo hướng khác, tương tác của \textbf{askreddit} là ổn định. Ngoài ra, \textbf{writingprompts} và \textbf{explainlikeimfive} cũng theo xu hướng tương tự.
+
+Mặc dù \textbf{nosleep} thường xuyên được post vào ban đêm và có số like khá khẩm hơn \textbf{askreddit}, số phản ứng lại đến nhiều hơn với những bài đăng ban ngày vào ban ngày. Quy tắc không thể hiện rõ nhưng có vài điểm tập trung khác thường vào hai, tư và sáu. Phải chăng các độc giả sẽ ít sợ nút like vào ban ngày hơn?
 
 Mỗi sub còn lại ít nhiều gì cũng có số like tương đồng bất kể giờ đăng. Riêng \textbf{pics}, \textbf{funny} và \textbf{aww} tiếp tục được nhận tương tác nhiều hơn các sub "tường chữ" một cách rõ rệt.
 
 \section{Dịch giả RedditVN}
 Cùng điểm một số số liệu thống kê về những chú kiến thợ của RedditVN.
+\subsection{Thống kê tổng quát}
+Tổng số dịch giả: 2458.
 
+Mỗi dịch giả trung bình dịch 9 bài.
 
+Dịch giả chăm chỉ nhất: Hoàng Anh Lâm, với 289 bài. Và bạn cũng là được like nhiều nhất: 374356 like.
+
+Địa chỉ Facebook: \href{https://facebook.com/100003092005874}{https://facebook.com/100003092005874}.
+
+Xét bình quân, dịch giả được cưng yêu nhất: Phạm Bảo Hưng, với trung bình 5168 like mỗi bài. Dù thực ra, bạn chỉ dịch đúng một bài:
+
+\href{https://www.facebook.com/groups/redditvietnam/permalink/670813969982675/}{https://www.facebook.com/groups/redditvietnam/permalink/\\670813969982675/}
+
+Địa chỉ Facebook: \href{https://facebook.com/100004271236056}{https://facebook.com/100004271236056}.
+
+\begin{itemize}
+    \item 498 dịch giả (20.26\%) có 10 bài dịch trở lên.
+    \item 259 dịch giả (10.54\%) có 20 bài dịch trở lên.
+    \item 97 dịch giả (3.95\%) có 50 bài dịch trở lên.
+    \item 29 dịch giả (1.18\%) có 100 bài dịch trở lên.
+    \item 6 dịch giả (0.24\%) có 200 bài dịch trở lên.
+\end{itemize}
+
+Có gần 80\% dịch giả có dưới 10 bài dịch nên mô hình thống kê là không cần thiết.
 \end{document}
