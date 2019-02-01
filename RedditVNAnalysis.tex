@@ -244,32 +244,32 @@ Bài nhiều like nhất:
     \item 2 bài (0,01\%) đạt 8000 like trở lên.
 \end{itemize}
 
-\begin{figure}[!hb]
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{img/LikesDistribution.png}
     \caption{Phân bố like}
     \label{fig:likesdistribution}
 \end{figure}
+
 Có ít hơn 5\% số bài viết đạt 4000 like trở lên, nên để khảo sát mật độ tập trung của like, chúng ta chỉ cần chú ý vào những bài viết 4000 like trở xuống.
 
-Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507 \times 10^{-24} < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
-\begin{figure}[!ht]
+\begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/FitLikesDistribution.png}
     \caption{Mô hình phân bố like}
     \label{fig:fitlikesdistribution}
 \end{figure}
+Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507 \times 10^{-24} < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
 
 \subsection{Theo giờ đăng}
 \subsubsection{Tổng thể}
-\begin{figure}[!h]
+Ô màu trên sơ đồ \eqref{fig:meanlikesweekdayhour} càng đậm thì càng được nhiều like. Nhìn tổng quan, hầu hết sơ đồ có màu đỏ vừa ở mức 600 like trở lên, tức là group RedditVN có lượng tương tác lớn.
+\begin{figure}[!ht]
     \centering
     \includegraphics[width=\textwidth]{img/MeanLikesWeekdayHour.png}
     \caption{Like trung bình của post tính theo giờ đăng}
     \label{fig:meanlikesweekdayhour}
 \end{figure}
-
-Ô màu trên sơ đồ \eqref{fig:meanlikesweekdayhour} càng đậm thì càng được nhiều like. Nhìn tổng quan, hầu hết sơ đồ có màu đỏ vừa ở mức 600 like trở lên, tức là group RedditVN có lượng tương tác lớn.
 
 Trái ngược với xu hướng đăng bài, các bài đăng vào khoảng 4 đến 10 giờ sáng nhìn chung được độc giả tương tác đáng kể. Những post buổi chiều và tối thì ít dần và thấp nhất là khuya tới sáng sớm 3 giờ.
 
@@ -299,13 +299,11 @@ Tổng số dịch giả: 2458.
 
 Mỗi dịch giả trung bình dịch 9 bài.
 
-Dịch giả chăm chỉ nhất: Hoàng Anh Lâm, với 289 bài. Và bạn cũng là được like nhiều nhất: 374356 like.
+Dịch giả chăm chỉ nhất: Hoàng Anh Lâm, với 289 bài. Và bạn cũng là người được like nhiều nhất: 374356 like.
 
 Địa chỉ Facebook: \href{https://facebook.com/100003092005874}{https://facebook.com/100003092005874}.
 
-Xét bình quân, dịch giả được cưng yêu nhất: Phạm Bảo Hưng, với trung bình 5168 like mỗi bài. Dù thực ra, bạn chỉ dịch đúng một bài:
-
-\href{https://www.facebook.com/groups/redditvietnam/permalink/670813969982675/}{https://www.facebook.com/groups/redditvietnam/permalink/\\670813969982675/}
+Xét bình quân, dịch giả được cưng yêu nhất: Phạm Bảo Hưng, với trung bình 5168 like mỗi bài. Dù thực ra, bạn chỉ dịch đúng một bài.
 
 Địa chỉ Facebook: \href{https://facebook.com/100004271236056}{https://facebook.com/100004271236056}.
 
@@ -318,4 +316,13 @@ Xét bình quân, dịch giả được cưng yêu nhất: Phạm Bảo Hưng, v
 \end{itemize}
 
 Có gần 80\% dịch giả có dưới 10 bài dịch nên mô hình thống kê là không cần thiết.
+
+\subsection{Lựa chọn dịch bài}
+Chúng ta cùng xem các dịch giả có xu hướng chọn bài như thế nào, dựa trên hai tiêu chí: độ nổi và độ cũ của submission gốc.
+
+Ở đây, chúng ta giả sử mỗi dòng trong bảng dữ liệu chỉ dịch một submission. Tất nhiên vẫn có những bài tổng hợp vài submission nhưng rất hiếm. Thật vậy, trong 22869 bài, chỉ có 534 bài đính kèm 2 link Reddit trở lên, chiếm 2,34\%: không đáng kể.
+
+Trước hết, tương tự các bài dịch tiếng việt ở trên, chúng ta phải kiểm tra tỉ số giữa karma và số bình luận trong một bài submission gốc.
+
+
 \end{document}

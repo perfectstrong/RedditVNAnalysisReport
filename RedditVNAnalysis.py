@@ -19,6 +19,8 @@ print("Số bài viết tổng cộng: {:d}".format(totalUnfiltered))
 df.drop(df[df["r_created_utc"] == 0].index, inplace=True) # filter
 totalFiltered = df.shape[0]
 print("Số bài viết sau khi lọc: {:d}. Tương đương {:.2f}% tổng số bài.".format(totalFiltered, totalFiltered / totalUnfiltered * 100))
+
+######################################################
 # define columns types
 df["r"] = df["r"].astype("category")
 df["user_raw_id"] = df["user_raw_id"].astype(str)
@@ -27,12 +29,31 @@ df["r"] = df["r"].str.lower()
 # time conversion
 df["created_time"]=pd.to_datetime(df["created_time"], format="%Y-%m-%dT%H:%M:%S.000Z", utc=True).dt.tz_convert("Asia/Ho_Chi_Minh")
 df["r_created_utc"]=pd.to_datetime(df["r_created_utc"], unit="s", utc=True).dt.tz_convert("Asia/Ho_Chi_Minh")
+
+######################################################
 # determine week day of post
 vietnameseDaysOfWeek = ['Hai', 'Ba', 'Tư', 'Năm', 'Sáu', 'Bảy', 'CN']
 df["weekday"] = df["created_time"].dt.weekday
 df["weekday"] = df["weekday"].astype("category")
 r = pd.crosstab(index=df["r"], columns="count")
 r.sort_values(by="count", ascending=False, inplace=True)
+######################################################
+# prepare hour stats
+Nrow = 2
+Ncol = 4
+Noffset = 0
+numWeeks = math.ceil((df.iloc[-1]["created_time"] - df.iloc[0]["created_time"]).days/7)
+def meanPostsPerWeek(series):
+    return np.size(series) / numWeeks
+listTopSubs = r.index[Noffset:(Noffset+Nrow*Ncol)].tolist()
+dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], columns="weekday", values=["likes_count", "post_id"], aggfunc={"likes_count": np.mean, "post_id": meanPostsPerWeek}, fill_value=0)
+
+######################################################
+# translators stats
+translators = df[["user_raw_id", "user_name"]]
+translators.drop_duplicates(subset="user_raw_id", keep='first', inplace=True)
+translators.set_index("user_raw_id", inplace=True)
+translatorsStats = df.pivot_table(index="user_raw_id", values=["likes_count", "post_id"], aggfunc={"likes_count": [np.sum, np.mean], "post_id": [np.size, meanPostsPerWeek]}, fill_value=0)
 
 #%%
 ######################################################
@@ -46,18 +67,6 @@ for dtype in list(set(df.dtypes)):
 print("Usage of each column in MB")
 for colName, usageB in df.memory_usage(index=True, deep=True).items():
     print("{:<20} {:10.2f} MB".format(colName, usageB / 1024 ** 2))
-
-#%%
-######################################################
-# preparation
-Nrow = 2
-Ncol = 4
-Noffset = 0
-numWeeks = math.ceil((df.iloc[-1]["created_time"] - df.iloc[0]["created_time"]).days/7)
-def meanPostsPerWeek(series):
-    return np.size(series) / numWeeks
-listTopSubs = r.index[Noffset:(Noffset+Nrow*Ncol)].tolist()
-dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], columns="weekday", values=["likes_count", "post_id"], aggfunc={"likes_count": np.mean, "post_id": meanPostsPerWeek}, fill_value=0)
 
 #%%
 ######################################################
@@ -293,10 +302,6 @@ plt.show()
 #%%
 ######################################################
 # statistics of translators
-translators = df[["user_raw_id", "user_name"]]
-translators.drop_duplicates(subset="user_raw_id", keep='first', inplace=True)
-translators.set_index("user_raw_id", inplace=True)
-translatorsStats = df.pivot_table(index="user_raw_id", values=["likes_count", "post_id"], aggfunc={"likes_count": [np.sum, np.mean], "post_id": [np.size, meanPostsPerWeek]}, fill_value=0)
 print("Tổng số dịch giả: {:d}".format(translators.size))
 print("Mỗi dịch giả trung bình dịch {:.0f} bài.".format(totalFiltered / translators.size))
 print("Dịch giả chăm chỉ nhất: {:s} (https://facebook.com/{:d}) với {:d} bài.".format(translators.loc[translatorsStats[('post_id', 'size')].idxmax()]["user_name"], translatorsStats[('post_id', 'size')].idxmax(), translatorsStats[('post_id', 'size')].max()))
@@ -306,3 +311,14 @@ postscountMarkpoints = [10, 20, 50, 100, 200]
 for i in postscountMarkpoints:
     p = translatorsStats[translatorsStats[("post_id", "size")] >= i].count()[0]
     print("{:d} dịch giả ({:.2%}) có {:d} bài dịch trở lên.".format(p, p / translators.size, i))
+
+#%%
+######################################################
+# reddit posts verification
+patternStr = r"https?://www\.reddit\.com/r/\w+/comments/(\w{1,6})/|https?://redd\.it/(\w{1,6})"
+dfLinks = df["message"].str.extractall(patternStr)
+dfLinksList = dfLinks.groupby(level=0)[0].apply(list) + dfLinks.groupby(level=0)[1].apply(list)
+del dfLinks
+dfLinksListCount = dfLinksList.apply(lambda x: len(set([y for y in x if str(y) != 'nan'])))
+multilinksSubmissionCount = (dfLinksListCount > 1).sum()
+print("Số bài dịch có 2 link reddit trở lên trong bài là {:d}, chiếm {:.2%} tổng số bài.".format(multilinksSubmissionCount, multilinksSubmissionCount / totalFiltered))
