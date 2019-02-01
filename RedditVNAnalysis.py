@@ -37,15 +37,18 @@ df["weekday"] = df["created_time"].dt.weekday
 df["weekday"] = df["weekday"].astype("category")
 r = pd.crosstab(index=df["r"], columns="count")
 r.sort_values(by="count", ascending=False, inplace=True)
+
+######################################################
+# interests mesure
+interests = df.groupby("r")["likes_count", "comments_count"].sum()
+interests["sum"] = interests["likes_count"] + interests["comments_count"]
+interests.sort_values(by="sum", ascending=False, inplace=True)
+
 ######################################################
 # prepare hour stats
-Nrow = 2
-Ncol = 4
-Noffset = 0
 numWeeks = math.ceil((df.iloc[-1]["created_time"] - df.iloc[0]["created_time"]).days/7)
 def meanPostsPerWeek(series):
     return np.size(series) / numWeeks
-listTopSubs = r.index[Noffset:(Noffset+Nrow*Ncol)].tolist()
 dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], columns="weekday", values=["likes_count", "post_id"], aggfunc={"likes_count": np.mean, "post_id": meanPostsPerWeek}, fill_value=0)
 
 ######################################################
@@ -61,12 +64,14 @@ translatorsStats = df.pivot_table(index="user_raw_id", values=["likes_count", "p
 df.info(memory_usage='deep')
 for dtype in list(set(df.dtypes)):
     selected_dtype = df.select_dtypes(include=[dtype])
-    sum_usage_b = selected_dtype.memory_usage(deep=True).sum()
-    sum_usage_mb = sum_usage_b / 1024 ** 2
-    print("Sum memory usage for {} columns: {:03.2f} MB".format(dtype,sum_usage_mb))
+    sumUsageB = selected_dtype.memory_usage(deep=True).sum()
+    sumUsageMB = sumUsageB / 1024 ** 2
+    print("Sum memory usage for {} columns: {:03.2f} MB".format(dtype,sumUsageMB))
 print("Usage of each column in MB")
 for colName, usageB in df.memory_usage(index=True, deep=True).items():
     print("{:<20} {:10.2f} MB".format(colName, usageB / 1024 ** 2))
+
+del dtype, selected_dtype, sumUsageB, sumUsageMB, colName, usageB
 
 #%%
 ######################################################
@@ -90,13 +95,16 @@ ax2.set_ylabel("Số like", fontsize=16)
 fig.tight_layout()
 fig.autofmt_xdate()
 plt.tick_params(axis="both", labelsize=14)
-handles,labels = [],[]
+handles, labels = [],[]
 for ax in fig.axes:
-    for h,l in zip(*ax.get_legend_handles_labels()):
+    for h, l in zip(*ax.get_legend_handles_labels()):
         handles.append(h)
         labels.append(l)
 plt.legend(handles, labels, loc="upper left")
 plt.show()
+
+del grouperAllByMonth, allPostsByMonth, allLikesByMonth, handles, labels, h, l, fig, ax1, ax2
+df.drop("created_time_utc", axis=1, inplace=True)
 
 #%%
 ######################################################
@@ -110,6 +118,8 @@ subsGreater10 = (r > 10).sum()[0]
 print("Số subreddit có trên 10 bài viết: {:d}. Tương đương {:.2f}% tổng số sub.".format(subsGreater10, subsGreater10 / subs * 100))
 subsGreater100 = (r > 100).sum()[0]
 print("Số subreddit có trên 100 bài viết: {:d}. Tương đương {:.2f}% tổng số sub.".format(subsGreater100, subsGreater100 / subs * 100))
+
+del subs, subsGreater1, subsGreater10, subsGreater100
 
 #%%
 ######################################################
@@ -129,24 +139,25 @@ ax.invert_yaxis()
 plt.tight_layout()
 plt.show()
 
+del N, rTop, y, i, fig, ax
+
 #%%
 ######################################################
 # top interested subreddits
-interests = df.groupby("r")["likes_count", "comments_count"].sum()
-interests["sum"] = interests["likes_count"] + interests["comments_count"]
-interests.sort_values(by="sum", ascending=False, inplace=True)
 Ni = 30
 yi = np.arange(Ni)
 ax = interests.iloc[0:Ni][["likes_count","comments_count"]].plot.barh(stacked=True)
 plt.title("Những Subreddit được chú ý nhất", fontsize=24)
 plt.xlabel("Tổng số cảm xúc và bình luận", fontsize=18)
-plt.yticks(yi, rTop.index.tolist(), fontsize=16)
+plt.yticks(yi, r.head(Ni).index.tolist(), fontsize=16)
 plt.ylabel("")
 plt.tight_layout()
 for i, subreddit in enumerate(interests[0:Ni].index.tolist()):
     s = interests.loc[subreddit]["sum"]
     ax.annotate(str(s), (s, i + .1), fontsize=16, color="black")
 ax.invert_yaxis()
+
+del Ni, yi, ax, i, subreddit, s
 
 #%%
 ######################################################
@@ -156,15 +167,20 @@ ratioCommentsCount = ratioCommentsCount.drop("askreddit")
 ratioCommentsCount = ratioCommentsCount.replace(np.inf, np.nan).dropna()
 print("askreddit có số comment nhiều hơn các sub khác {:.2f} lần trở lên.".format(float(ratioCommentsCount.min())))
 
+del ratioCommentsCount
+
 #%%
 ######################################################
 # mean interests
 meanInterests = df.groupby("r")["likes_count", "comments_count"].mean()
-for i in range(Ni):
+N = 30
+for i in range(N):
     subreddit = interests.index[i]
     print("Trung bình một bài {:s} sẽ có {:.0f} like (cảm xúc) và {:.0f} bình luận.".format(subreddit, meanInterests.loc[subreddit]["likes_count"], meanInterests.loc[subreddit]["comments_count"]))
 
 print("Còn trung bình toàn thể là {:.0f} like (cảm xúc) và {:.0f} bình luận.".format(df["likes_count"].mean(), df["comments_count"].mean()))
+
+del meanInterests, N, i, subreddit
 
 #%%
 ######################################################
@@ -187,6 +203,8 @@ ax.legend()
 ax.grid(True)
 plt.show()
 
+del grouperByRMonth, countRByMonth, Nr, fig, ax, monthLabels, subreddit
+
 #%%
 ######################################################
 # mean likes per hour overall
@@ -203,6 +221,8 @@ plt.xlabel("Thứ", fontsize=16)
 plt.tight_layout()
 plt.colorbar(im, ax=ax)
 plt.show()
+
+del dfMeanLikesWeekdayHour, fig, ax, im
 
 #%%
 ######################################################
@@ -221,9 +241,15 @@ plt.tight_layout()
 plt.colorbar(im, ax=ax)
 plt.show()
 
+del dfMeanPostsWeekdayHour, fig, ax, im
+
 #%%
 ######################################################
 # mean likes per hour per sub
+Nrow = 2
+Ncol = 4
+Noffset = 0
+listTopSubs = r.index[Noffset:(Noffset+Nrow*Ncol)].tolist()
 fig = plt.figure()
 grid = AxesGrid(fig, 111, nrows_ncols=(Nrow, Ncol), axes_pad=0.5, share_all=True, label_mode="L", cbar_location="right", cbar_mode="single", cbar_pad=0.1, aspect=False)
 for i in range(Nrow*Ncol):
@@ -240,9 +266,16 @@ grid.axes_llc.set_xticklabels(vietnameseDaysOfWeek)
 fig.suptitle("Like trung bình mỗi giờ của {:d} sub nổi nhất".format(Nrow*Ncol), fontsize=24)
 plt.show()
 
+del Nrow, Ncol, Noffset, listTopSubs, fig, grid, i, subreddit, imTemp
+
 #%%
 ######################################################
 # mean posts per hour per sub
+Nrow = 2
+Ncol = 4
+Noffset = 0
+listTopSubs = r.index[Noffset:(Noffset+Nrow*Ncol)].tolist()
+
 fig = plt.figure()
 grid = AxesGrid(fig, 111, nrows_ncols=(Nrow, Ncol), axes_pad=0.5, share_all=True, label_mode="L", cbar_location="right", cbar_mode="single", cbar_pad=0.1, aspect=False)
 for i in range(Nrow*Ncol):
@@ -258,6 +291,8 @@ grid.axes_llc.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 grid.axes_llc.set_xticklabels(vietnameseDaysOfWeek)
 fig.suptitle("Số post trung bình mỗi giờ của {:d} sub nổi nhất".format(Nrow*Ncol), fontsize=24)
 plt.show()
+
+del Nrow, Ncol, Noffset, listTopSubs, fig, grid, i, subreddit, imTemp
 
 #%%
 ######################################################
@@ -281,6 +316,8 @@ plt.xlabel("Số like", fontsize=16)
 plt.ylabel("Số bài viết", fontsize=16)
 plt.show()
 
+del likescountMarkpoints, i, p, fig, ax, likescountBins
+
 #%%
 ######################################################
 # estimate distribution
@@ -299,6 +336,8 @@ kstest = stats.kstest(reducedLikescount, 'lognorm', param)
 plt.text(7, 0.5, "Model: lognorm\nShape = {:f}\nLoc = {:f}\nScale = {:f}\nKS-test:\nD = {:f}\np-value: {:f}".format(param[0], param[1], param[2], kstest.statistic, kstest.pvalue), fontsize=16)
 plt.show()
 
+del sc, reducedLikescount, l, param, pdfFitted, fig, kstest
+
 #%%
 ######################################################
 # statistics of translators
@@ -312,13 +351,16 @@ for i in postscountMarkpoints:
     p = translatorsStats[translatorsStats[("post_id", "size")] >= i].count()[0]
     print("{:d} dịch giả ({:.2%}) có {:d} bài dịch trở lên.".format(p, p / translators.size, i))
 
+del postscountMarkpoints, i, p
+
 #%%
 ######################################################
 # reddit posts verification
 patternStr = r"https?://www\.reddit\.com/r/\w+/comments/(\w{1,6})/|https?://redd\.it/(\w{1,6})"
 dfLinks = df["message"].str.extractall(patternStr)
 dfLinksList = dfLinks.groupby(level=0)[0].apply(list) + dfLinks.groupby(level=0)[1].apply(list)
-del dfLinks
 dfLinksListCount = dfLinksList.apply(lambda x: len(set([y for y in x if str(y) != 'nan'])))
 multilinksSubmissionCount = (dfLinksListCount > 1).sum()
 print("Số bài dịch có 2 link reddit trở lên trong bài là {:d}, chiếm {:.2%} tổng số bài.".format(multilinksSubmissionCount, multilinksSubmissionCount / totalFiltered))
+
+del patternStr, dfLinks, dfLinksList, dfLinksListCount, multilinksSubmissionCount
