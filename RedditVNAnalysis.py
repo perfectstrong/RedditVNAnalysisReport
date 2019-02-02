@@ -3,11 +3,19 @@
 ######################################################
 # libraries
 import pandas as pd
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.axes_grid1 import AxesGrid
 import math
 from scipy import stats
+
+# matplotlib params
+mpl.rcParams["axes.titlesize"] = 24
+mpl.rcParams["axes.grid"] = True
+mpl.rcParams["axes.labelsize"] = 16
+mpl.rcParams["xtick.labelsize"] = 14
+mpl.rcParams["ytick.labelsize"] = 14
 
 #%%
 ######################################################
@@ -82,19 +90,16 @@ allPostsByMonth = grouperAllByMonth["post_id"].size().fillna(0)
 allLikesByMonth = grouperAllByMonth["likes_count"].sum().fillna(0)
 
 fig = plt.figure()
-plt.title("Thống kê tổng số post và like", fontsize=24)
+plt.title("Thống kê tổng số post và like")
 monthLabels = allPostsByMonth.index.strftime("%m-%Y").tolist()
 ax1 = fig.add_subplot(111)
 ax1.plot(monthLabels, allPostsByMonth, "r-", label="Post")
-ax1.set_xlabel("Tháng", fontsize=16)
-ax1.set_ylabel("Số bài viết", fontsize=16)
-ax1.grid(True)
+ax1.set_xlabel("Tháng")
+ax1.set_ylabel("Số bài viết")
 ax2 = ax1.twinx()
 ax2.plot(monthLabels, allLikesByMonth, "b-", label="Like")
-ax2.set_ylabel("Số like", fontsize=16)
-fig.tight_layout()
+ax2.set_ylabel("Số like")
 fig.autofmt_xdate()
-plt.tick_params(axis="both", labelsize=14)
 handles, labels = [],[]
 for ax in fig.axes:
     for h, l in zip(*ax.get_legend_handles_labels()):
@@ -130,13 +135,13 @@ y = np.arange(N)
 
 fig, ax = plt.subplots()
 plt.barh(y, rTop["count"])
-plt.title("Những Subreddit nhiều bài dịch nhất", fontsize=24)
-plt.xlabel("Số bài được dịch", fontsize=18)
-plt.yticks(y, rTop.index.tolist(), fontsize=16)
+plt.title("Những Subreddit nhiều bài dịch nhất")
+plt.xlabel("Số bài được dịch")
+plt.yticks(y, rTop.index.tolist())
 for i in ax.patches:
-    ax.text(i.get_width() + .1, i.get_y() + 0.5, str(int(i.get_width())), fontsize=16, color="black")
+    ax.text(i.get_width() + .1, i.get_y() + 0.5, str(int(i.get_width())), color="black")
 ax.invert_yaxis()
-plt.tight_layout()
+ax.grid(False)
 plt.show()
 
 del N, rTop, y, i, fig, ax
@@ -147,15 +152,15 @@ del N, rTop, y, i, fig, ax
 Ni = 30
 yi = np.arange(Ni)
 ax = interests.iloc[0:Ni][["likes_count","comments_count"]].plot.barh(stacked=True)
-plt.title("Những Subreddit được chú ý nhất", fontsize=24)
-plt.xlabel("Tổng số cảm xúc và bình luận", fontsize=18)
-plt.yticks(yi, r.head(Ni).index.tolist(), fontsize=16)
+plt.title("Những Subreddit được chú ý nhất")
+plt.xlabel("Tổng số cảm xúc và bình luận")
+plt.yticks(yi, r.head(Ni).index.tolist())
 plt.ylabel("")
-plt.tight_layout()
 for i, subreddit in enumerate(interests[0:Ni].index.tolist()):
     s = interests.loc[subreddit]["sum"]
-    ax.annotate(str(s), (s, i + .1), fontsize=16, color="black")
+    ax.annotate(str(s), (s, i + .1), color="black")
 ax.invert_yaxis()
+ax.grid(False)
 
 del Ni, yi, ax, i, subreddit, s
 
@@ -193,14 +198,11 @@ plt.set_cmap("nipy_spectral")
 monthLabels = countRByMonth.index.strftime("%m-%Y").tolist()
 for subreddit in r.index[0:Nr-1].tolist():
     ax.plot(monthLabels, countRByMonth[subreddit].tolist(), label=subreddit)
-plt.title("Số bài dịch mỗi sub theo thời gian", fontsize=24)
-plt.xticks(fontsize=14)
+plt.title("Số bài dịch mỗi sub theo thời gian")
 plt.ylabel("")
 plt.xlabel("")
-plt.tight_layout()
 fig.autofmt_xdate()
 ax.legend()
-ax.grid(True)
 plt.show()
 
 del grouperByRMonth, countRByMonth, Nr, fig, ax, monthLabels, subreddit
@@ -213,12 +215,9 @@ fig, ax = plt.subplots()
 im = ax.imshow(dfMeanLikesWeekdayHour, cmap="Reds", aspect="auto")
 ax.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 ax.set_xticklabels(vietnameseDaysOfWeek)
-plt.title("Like trung bình theo giờ đăng", fontsize=24)
-plt.xticks(fontsize=14)
-plt.yticks(fontsize=14)
-plt.ylabel("Giờ", fontsize=16)
-plt.xlabel("Thứ", fontsize=16)
-plt.tight_layout()
+plt.title("Like trung bình theo giờ đăng")
+plt.ylabel("Giờ")
+plt.xlabel("Thứ")
 plt.colorbar(im, ax=ax)
 plt.show()
 
@@ -232,12 +231,9 @@ fig, ax = plt.subplots()
 im = ax.imshow(dfMeanPostsWeekdayHour, cmap="Reds", aspect="auto")
 ax.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 ax.set_xticklabels(vietnameseDaysOfWeek)
-plt.title("Số bài trung bình theo giờ đăng", fontsize=24)
-plt.xticks(fontsize=14)
-plt.yticks(fontsize=14)
-plt.ylabel("Giờ", fontsize=16)
-plt.xlabel("Thứ", fontsize=16)
-plt.tight_layout()
+plt.title("Số bài trung bình theo giờ đăng")
+plt.ylabel("Giờ")
+plt.xlabel("Thứ")
 plt.colorbar(im, ax=ax)
 plt.show()
 
@@ -255,11 +251,12 @@ grid = AxesGrid(fig, 111, nrows_ncols=(Nrow, Ncol), axes_pad=0.5, share_all=True
 for i in range(Nrow*Ncol):
     subreddit = listTopSubs[i]
     imTemp = grid[i].imshow(dfWeekdayHourPerSub.query('r == "{:s}"'.format(subreddit))["likes_count"], cmap="Reds", aspect="auto")
-    grid[i].set_title(subreddit, fontsize=16)
+    grid[i].set_title(subreddit, fontsize=20)
     grid[i].set_aspect("auto")
-    grid[i].set_xlabel("Thứ", fontsize=16)
-    grid[i].set_ylabel("Giờ", fontsize=16)
+    grid[i].set_xlabel("Thứ")
+    grid[i].set_ylabel("Giờ")
     grid[i].tick_params(axis="both", labelsize=12)
+    grid[i].grid(False)
 grid.cbar_axes[0].colorbar(imTemp)
 grid.axes_llc.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 grid.axes_llc.set_xticklabels(vietnameseDaysOfWeek)
@@ -281,11 +278,12 @@ grid = AxesGrid(fig, 111, nrows_ncols=(Nrow, Ncol), axes_pad=0.5, share_all=True
 for i in range(Nrow*Ncol):
     subreddit = listTopSubs[i]
     imTemp = grid[i].imshow(dfWeekdayHourPerSub.query('r == "{:s}"'.format(subreddit))["post_id"], cmap="Reds", aspect="auto")
-    grid[i].set_title(subreddit, fontsize=16)
+    grid[i].set_title(subreddit, fontsize=20)
     grid[i].set_aspect("auto")
-    grid[i].set_xlabel("Thứ", fontsize=16)
-    grid[i].set_ylabel("Giờ", fontsize=16)
+    grid[i].set_xlabel("Thứ")
+    grid[i].set_ylabel("Giờ")
     grid[i].tick_params(axis="both", labelsize=12)
+    grid[i].grid(False)
 grid.cbar_axes[0].colorbar(imTemp)
 grid.axes_llc.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 grid.axes_llc.set_xticklabels(vietnameseDaysOfWeek)
@@ -308,12 +306,13 @@ likescountMarkpoints = [100, 300, 500, 1000, 2000, 4000, 6000, 8000]
 for i in likescountMarkpoints:
     p = (df["likes_count"] >= i).sum()
     print("Có {:d} bài ({:.2%}) đạt {:d} like trở lên.".format(p, p / totalFiltered, i))
+
 fig, ax = plt.subplots()
 likescountBins = range(0, 4000, 100)
 df.hist(column="likes_count", grid=True, xlabelsize=14, ylabelsize=14, bins=likescountBins, ax=ax)
-plt.title("Phân bố số like", fontsize=24)
-plt.xlabel("Số like", fontsize=16)
-plt.ylabel("Số bài viết", fontsize=16)
+plt.title("Phân bố số like")
+plt.xlabel("Số like")
+plt.ylabel("Số bài viết")
 plt.show()
 
 del likescountMarkpoints, i, p, fig, ax, likescountBins
@@ -326,12 +325,13 @@ reducedLikescount = df["likes_count"].copy() / sc
 l = np.arange(0, 4000 / sc, 100 / (sc * 2))
 param = stats.lognorm.fit(reducedLikescount)
 pdfFitted = stats.lognorm.pdf(l, param[0], param[1], param[2])
+
 fig = plt.figure()
 plt.hist(reducedLikescount, bins=l, density=True)
 plt.plot(l, pdfFitted, "r-")
-plt.title("Ước lượng phân bố", fontsize=24)
-plt.xlabel("Số bài viết (đơn vị: {:d} bài)".format(sc), fontsize=16)
-plt.ylabel("Mật độ", fontsize=16)
+plt.title("Ước lượng phân bố")
+plt.xlabel("Số bài viết (đơn vị: {:d} bài)".format(sc))
+plt.ylabel("Mật độ")
 kstest = stats.kstest(reducedLikescount, 'lognorm', param)
 plt.text(7, 0.5, "Model: lognorm\nShape = {:f}\nLoc = {:f}\nScale = {:f}\nKS-test:\nD = {:f}\np-value: {:f}".format(param[0], param[1], param[2], kstest.statistic, kstest.pvalue), fontsize=16)
 plt.show()
@@ -348,7 +348,7 @@ print("Dịch giả dễ thương nhất: {:s} (https://facebook.com/{:d}) với
 print("Dịch giả hay được cưng yêu nhất: {:s} (https://facebook.com/{:d}) với trung bình {:.0f} like mỗi bài.".format(translators.loc[translatorsStats[('likes_count', 'mean')].idxmax()]["user_name"], translatorsStats[('likes_count', 'mean')].idxmax(), translatorsStats[('likes_count', 'mean')].max()))
 postscountMarkpoints = [10, 20, 50, 100, 200]
 for i in postscountMarkpoints:
-    p = translatorsStats[translatorsStats[("post_id", "size")] >= i].count()[0]
+    p = (translatorsStats[("post_id", "size")] >= i).sum()
     print("{:d} dịch giả ({:.2%}) có {:d} bài dịch trở lên.".format(p, p / translators.size, i))
 
 del postscountMarkpoints, i, p
@@ -364,3 +364,65 @@ multilinksSubmissionCount = (dfLinksListCount > 1).sum()
 print("Số bài dịch có 2 link reddit trở lên trong bài là {:d}, chiếm {:.2%} tổng số bài.".format(multilinksSubmissionCount, multilinksSubmissionCount / totalFiltered))
 
 del patternStr, dfLinks, dfLinksList, dfLinksListCount, multilinksSubmissionCount
+
+#%%
+######################################################
+# ratio of karma and comments on submissions
+meanKarma, meanCommentsCount = df[["r_score", "r_num_comments"]].mean()
+print("Karma trung bình: {:.0f}.".format(meanKarma))
+print("Số bình luận trung bình: {:.0f}.".format(meanCommentsCount))
+print("Tỉ lệ Karma trên bình luận: {:.2f}.".format(meanKarma / meanCommentsCount))
+
+del meanKarma, meanCommentsCount
+
+#%%
+######################################################
+# choice of submission and interest reception
+dfChoices = df[["r", "r_score", "likes_count", "created_time", "r_created_utc"]].copy()
+dfChoices["delta"] = dfChoices["created_time"] - dfChoices["r_created_utc"]
+# minor filter
+irr = (dfChoices["delta"].dt.days < 0).sum()
+print("{:d} bài có delta < 0, chiếm {:.2%} tổng số.".format(irr, irr / totalFiltered))
+dfChoices.drop(dfChoices[dfChoices["delta"].dt.days < 0].index, inplace=True)
+# convert delta to days in float
+dfChoices["days_f"] = dfChoices["delta"] / np.timedelta64(1, "D")
+# general stats
+print("Khoảng cách xa nhất: {}. Link: https://www.facebook.com/groups/redditvietnam/permalink/{}.".format(dfChoices["delta"].max(), df.loc[dfChoices["delta"].idxmax()]["post_raw_id"]))
+delays = [1, 7, 14, 30, 90, 180, 360, 720, 1080, 1800]
+sampleSize = len(dfChoices.index)
+for i in delays:
+    p = (dfChoices["days_f"] >= i).sum()
+    print("{:d} submission ({:.2%}) được dịch sau {:d} ngày.".format(p, p / sampleSize, i))
+# crop
+rScoreCrop = 100000
+daysFCrop = 7
+dfChoicesCrop = dfChoices[(dfChoices["r_score"] < rScoreCrop) & (dfChoices["days_f"] < daysFCrop)]
+
+# distribution
+fig1, ax1 = plt.subplots()
+bins = np.arange(0, 3500, 100)
+ax1.hist(dfChoices["days_f"], bins=bins, rwidth=0.8)
+ax1.set_title("Bao lâu submission mới được dịch?")
+ax1.set_xlabel("Số ngày")
+ax1.set_ylabel("Số bài")
+fig1.show()
+
+# distribution with likes
+fig2, ax2 = plt.subplots()
+g2 = ax2.scatter(dfChoices["r_score"].values, dfChoices["days_f"].values, c=dfChoices["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
+ax2.set_title("Tương tác của submission trên Reddit và RedditVN")
+ax2.set_xlabel("Karma trên Reddit", fontsize=16)
+ax2.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
+fig2.colorbar(g2, ax=ax2)
+fig2.show()
+
+# cropped
+fig3, ax3 = plt.subplots()
+g3 = ax3.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["days_f"].values, c=dfChoicesCrop["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
+ax3.set_title("Tương tác của submission trên Reddit và RedditVN")
+ax3.set_xlabel("Karma trên Reddit")
+ax3.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
+fig3.colorbar(g3, ax=ax3)
+fig3.show()
+
+del irr, dfChoices, delays, sampleSize, i, p, fig1, ax1, bins, fig2, ax2, g2, rScoreCrop, daysFCrop, dfChoicesCrop, fig3, ax3, g3

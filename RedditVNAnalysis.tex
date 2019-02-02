@@ -320,9 +320,66 @@ Có gần 80\% dịch giả có dưới 10 bài dịch nên mô hình thống k�
 \subsection{Lựa chọn dịch bài}
 Chúng ta cùng xem các dịch giả có xu hướng chọn bài như thế nào, dựa trên hai tiêu chí: độ nổi và độ cũ của submission gốc.
 
-Ở đây, chúng ta giả sử mỗi dòng trong bảng dữ liệu chỉ dịch một submission. Tất nhiên vẫn có những bài tổng hợp vài submission nhưng rất hiếm. Thật vậy, trong 22869 bài, chỉ có 534 bài đính kèm 2 link Reddit trở lên, chiếm 2,34\%: không đáng kể.
+Ở đây, chúng ta giả sử mỗi dòng trong bảng dữ liệu chỉ dịch một submission. Tất nhiên vẫn có những bài tổng hợp vài submission nhưng hiếm. Thật vậy, trong 22869 bài, chỉ có 534 bài đính kèm 2 link Reddit trở lên, chiếm 2,34\%: không đáng kể.
 
-Trước hết, tương tự các bài dịch tiếng việt ở trên, chúng ta phải kiểm tra tỉ số giữa karma và số bình luận trong một bài submission gốc.
+Quay trở lại vấn đề. Mỗi submission trung bình có 20640 karma và 1517 bình luận. Tỉ lệ là 13,61 karma trên một bình luận. Như vậy, chúng ta chỉ cần lấy số karma làm đại diện cho độ nổi của một submission.
 
+Ngoài ra, có 9 bài (tức 0.04\% tổng số) có thời gian đăng submission sau thời gian đăng bài dịch. Có nhiều lý do: người đăng đăng trên group Facebook trước rồi đăng lên r/RedditVN hoặc r/hmm để hợp lệ hóa; sai id; bài trên reddit bị chuyển. Vì số lượng hiếm, chúng ta sẽ loại bỏ những trường hợp này trước khi phân tích. Do đó, chúng ta có 22860 mẫu để thống kê.
+
+Trên tiêu chí độ cũ: lâu nhất là 3455 ngày (khoảng 9 năm).
+
+\href{https://www.facebook.com/groups/redditvietnam/permalink/640963659634373}{https://www.facebook.com/groups/redditvietnam/permalink/\\640963659634373}
+
+Đồng thời:
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{img/DelaysDistribution.png}
+    \caption{Bao lâu một bài reddit mới được dịch?}
+    \label{fig:delaysdistribution}
+\end{figure}
+Gần một nửa số submission được dịch trong vòng 1 ngày kể từ lúc đăng lên. Chưa tới 10\% là những bài cũ hơn 2 năm.
+
+Đồ thị \eqref{fig:interestcomparision1} biểu hiện mối quan hệ giữa karma và thời gian "chờ được dịch", cũng như phản hồi từ độc giả. Màu càng đậm chứng tỏ bài dịch càng được yêu thích.
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{img/InterestComparision.png}
+    \caption{Tương tác của submission trên Reddit và RedditVN (toàn bộ)}
+    \label{fig:interestcomparision1}
+\end{figure}
+\begin{itemize}
+    \item Các điểm hầu hết có màu vàng nhạt, tương ứng với mức 2000 like trở xuống cho mỗi bài.
+    \item Phần lớn các điểm tập trung ở gốc trái gần gốc tọa độ, nghĩa là dịch giả thường chọn các bài không quá cũ nhưng vẫn nổi.
+\end{itemize}
+
+Tỉ lệ chính xác:
+\begin{itemize}
+    \item 11994 submission (52.47\%) được dịch sau 1 ngày.
+    \item 7841 submission (34.30\%) được dịch sau 1 tuần.
+    \item 6326 submission (27.67\%) được dịch sau 30 ngà (1 tháng).
+    \item 4308 submission (18.85\%) được dịch sau 180 ngày (nửa năm).
+    \item 3140 submission (13.74\%) được dịch sau 360 ngày (1 năm).
+    \item 2007 submission (8.78\%) được dịch sau 720 ngày (2 năm).
+    \item 397 submission (1.74\%) được dịch sau 1800 ngày (5 năm).
+\end{itemize}
+
+Phóng to hình vẽ, chúng ta có thể khẳng định xu hướng chủ yếu là chọn những bài mới ra hôm qua.
+\begin{figure}[!hb]
+    \centering
+    \includegraphics[width=\textwidth]{img/InterestComparision_1200D.png}
+    \caption{Tương tác của submission trên Reddit và RedditVN (không cũ quá 3 năm)}
+    \label{fig:interestcomparision2}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{img/InterestComparision_7D.png}
+    \caption{Tương tác của submission trên Reddit và RedditVN (không cũ quá 1 tuần)}
+    \label{fig:interestcomparision3}
+\end{figure}
+\begin{figure}[!h]
+    \centering
+    \includegraphics[width=\textwidth]{img/InterestComparision_1D.png}
+    \caption{Tương tác của submission trên Reddit và RedditVN (trong ngày hôm qua)}
+    \label{fig:interestcomparision3}
+\end{figure}
 
 \end{document}
