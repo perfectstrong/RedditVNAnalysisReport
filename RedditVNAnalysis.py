@@ -398,7 +398,7 @@ rScoreCrop = 100000
 daysFCrop = 7
 dfChoicesCrop = dfChoices[(dfChoices["r_score"] < rScoreCrop) & (dfChoices["days_f"] < daysFCrop)]
 
-# distribution
+# distribution of delays
 fig1, ax1 = plt.subplots()
 bins = np.arange(0, 3500, 100)
 ax1.hist(dfChoices["days_f"], bins=bins, rwidth=0.8)
@@ -407,7 +407,7 @@ ax1.set_xlabel("Số ngày")
 ax1.set_ylabel("Số bài")
 fig1.show()
 
-# distribution with likes
+# distribution of delays, karma and likes
 fig2, ax2 = plt.subplots()
 g2 = ax2.scatter(dfChoices["r_score"].values, dfChoices["days_f"].values, c=dfChoices["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
 ax2.set_title("Tương tác của submission trên Reddit và RedditVN")
@@ -416,7 +416,7 @@ ax2.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
 fig2.colorbar(g2, ax=ax2)
 fig2.show()
 
-# cropped
+# cropped distribution of delays, karma and likes
 fig3, ax3 = plt.subplots()
 g3 = ax3.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["days_f"].values, c=dfChoicesCrop["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
 ax3.set_title("Tương tác của submission trên Reddit và RedditVN")
@@ -424,5 +424,14 @@ ax3.set_xlabel("Karma trên Reddit")
 ax3.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
 fig3.colorbar(g3, ax=ax3)
 fig3.show()
+
+# distribution of karma and likes
+fig4 = plt.figure()
+ax4 = fig4.add_subplot(121)
+g4 = ax4.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
+ax4.set_title("So sánh karma và like")
+ax4.set_xlabel("Karma trên Reddit")
+ax4.set_ylabel("Like trên Facebook")
+fig4.show()
 
 del irr, dfChoices, delays, sampleSize, i, p, fig1, ax1, bins, fig2, ax2, g2, rScoreCrop, daysFCrop, dfChoicesCrop, fig3, ax3, g3
