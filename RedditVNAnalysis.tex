@@ -32,21 +32,21 @@ Dữ liệu được cung cấp ở đây:
 
 Trong thư mục \texttt{redditStats}, file \texttt{20170101T000000-20190101T000000.csv} chứa toàn bộ bài viết trong group RedditVN từ khi thành lập đến cuối năm 2018. Các bài đăng sau mốc trên vẫn còn tương tác ít nhiều, sẽ ảnh hưởng đến phân tích nói chung. Do đó, chúng ta chỉ tập trung vào khoảng thời gian trước năm 2019.
 
-Ngoài ra, trước khi tool trợ giúp dịch thuật ra đời, bài dịch trong nhóm nói chung không theo một format thống nhất, dẫn đến không ít post không dẫn kèm link gốc. Hoặc hy hữu một số link gốc bị xóa hay khóa.
+Ngoài ra, trước khi tool trợ giúp dịch thuật ra đời, bài dịch trong nhóm nói chung không theo một format thống nhất, dẫn đến không ít post không dẫn kèm link gốc. Hoặc hy hữu một số link gốc bị xóa hay khóa. Dữ liệu được tính theo giờ UTC nên nếu xét giờ VN, một số bài viết của năm 2019 sẽ lẫn vào.
 
-Sau khi loại bỏ các bài không thể truy ra ID Reddit hoặc có ID hỏng từ 28636 post, chúng ta còn 22869, chiếm 79,86\% tổng số. Mẫu dữ liệu này có thể coi là hợp lệ để nghiên cứu.
+Sau khi lọc 28636 post, chúng ta còn 22864, chiếm 79,84\% tổng số. Mẫu dữ liệu này có thể coi là hợp lệ để nghiên cứu.
 
 \section{Subreddit được dịch nhiều nhất}
 \subsection{Trung bình}
 Trong vòng hai năm qua (2017-2018), đã có 1417 subreddit khác nhau được dịch. Trung bình mỗi sub có 16,13 bài.
 \begin{itemize}
-    \item 783 sub (tức 55,26\%) có trên 1 bài viết.
+    \item 783 sub (tức 55,19\%) có trên 1 bài viết.
     \item 226 sub (tức 15,95\%) có trên 10 bài viết.
-    \item 38 sub (tức 2,46\%) có trên 100 bài viết.
+    \item 41 sub (tức 2,89\%) có trên 100 bài viết.
 \end{itemize}
 
 \subsection{Tổng}
-Chúng ta xem xét 30 subreddit được dịch nhiều nhất.
+Chúng ta xem xét 30 subreddit được dịch nhiều nhất. (Hình \eqref{fig:toptranslatedsubreddits})
 \begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/TopTranslatedSubreddits.png}
@@ -73,7 +73,7 @@ Dễ thấy chủ đề được các dịch giả RedditVN chọn nhiều nhấ
     \label{fig:topattentionsubreddits}
 \end{figure}
 
-\textbf{askreddit} tiếp tục giữ vị trí độc tôn với tổng số lượt thích (cũng như cảm xúc khác) và bình luận cao chót vót gần 3 triệu, gấp đôi á quân \textbf{nosleep} quen thuộc. \textbf{todayilearned} và \textbf{pics} bám đuổi sát sao ở số 3 và số 4. Các vị trí tiếp theo, với tổng số like và comment dưới 650 nghìn, nhìn chung không khác mấy so với hình \eqref{fig:toptranslatedsubreddits}. Ta có thể kết luận rằng:
+Dựa trên hình \eqref{fig:topattentionsubreddits}, \textbf{askreddit} tiếp tục giữ vị trí độc tôn với tổng số lượt thích (cũng như cảm xúc khác) và bình luận cao chót vót gần 3 triệu, gấp đôi á quân \textbf{nosleep} quen thuộc. \textbf{todayilearned} và \textbf{pics} bám đuổi sát sao ở số 3 và số 4. Các vị trí tiếp theo, với tổng số like và comment dưới 650 nghìn, nhìn chung không khác mấy so với hình \eqref{fig:toptranslatedsubreddits}. Ta có thể kết luận rằng:
 \begin{remark}
     \label{re:attentionandtranslation}
     \textbf{"Sub được dịch nhiều"} tương đương với \textbf{"bài sẽ nhiều tương tác"}.
@@ -99,7 +99,7 @@ Một giải pháp khắc phục là sử dụng hình minh họa bắt mắt đ
         \hline
         Subreddit & Số phản ứng trung bình & Số bình luận trung bình \\
         \hline
-        \textbf{tổng thể} & \textbf{874} & \textbf{111} \\
+        \textbf{tổng thể} & \textbf{873} & \textbf{111} \\
         \hline
         askreddit & 779 & 278 \\
         \hline
@@ -171,7 +171,7 @@ Vì không có điều kiện gì khác, chúng ta sẽ giả sử rằng mọi 
 
 \subsection{Tổng quan}
 
-Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. Từ khi thành lập (tháng 4 / 2017), số lượng bài viết và tương tác tăng dần, mặc dầu có giảm một chút vào giai đoạn đầu năm 2018. 
+Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. Từ khi thành lập (tháng 4 / 2017), số lượng bài viết và tương tác tăng dần, mặc dầu có giảm một chút vào giai đoạn đầu năm 2018. (Hình \eqref{fig:alllikespostsovertime})
 \begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/AllLikesPostsOverTime.png}
@@ -182,7 +182,7 @@ Bài dịch đầu tiên được đăng vào 18:59:17+0700 ngày 28/04/2017. T�
 Tuy nhiên, đến tháng 10 và 11 cùng năm, từ vị trí cao nhất biểu đồ tính tới thời điểm ấy (khoảng 2800 post và 2800000 like), số bài viết và tương tác rớt dốc thê thảm xuống còn 1/5. Nguyên nhân vẫn chưa được xác định, song có thể phỏng đoán là do cuộc "Đại Thanh Trừng" khiến số lượng thành viên sụt giảm nghiêm trọng. (Cần kiểm chứng). May mắn thay, tháng tiếp theo, con số đã phục hồi và còn nhỉnh hơn lúc trước.
 
 \subsection{Mỗi tháng của từng sub}
-Chúng ta sẽ quan sát số lượng post của 15 chủ đề được dịch nhiều nhất từ tháng 4/2017 đến tháng 12/2018.
+Chúng ta sẽ quan sát số lượng post của 15 chủ đề được dịch nhiều nhất từ tháng 4/2017 đến tháng 12/2018. (Hình \eqref{fig:postsovertime})
 
 \begin{figure}[h]
     \centering
@@ -213,7 +213,7 @@ Trái lại, khoảng 1 giờ tới 8 giờ lại vắng tanh. Bài post vào gi
     \label{fig:meanpostsweekdayhourpersub}
 \end{figure}
 
-Các sub nổi nhất nói chung đều tuân theo quy luật của tổng thể, ngoại trừ \textbf{nosleep} hay xuất hiện vào giờ ngủ nghỉ 21 tới 24 giờ. Điều này khá dễ hiểu bởi tính chất ma quỷ hù dọa của \textbf{nosleep}, người dịch sẽ không muốn nhát ma người khác vào ban ngày ban mặt.
+(Hình \eqref{fig:meanpostsweekdayhourpersub}) Các sub nổi nhất nói chung đều tuân theo quy luật của tổng thể, ngoại trừ \textbf{nosleep} hay xuất hiện vào giờ ngủ nghỉ 21 tới 24 giờ. Điều này khá dễ hiểu bởi tính chất ma quỷ hù dọa của \textbf{nosleep}, người dịch sẽ không muốn nhát ma người khác vào ban ngày ban mặt.
 
 Ngoài ra, các sub khác đều tuân theo quy luật tổng thể. Nhưng chỉ có \textbf{askreddit} là đăng khá đồng đều giữa các khung giờ.
 
@@ -223,6 +223,8 @@ Một khi đã biết xu hướng đăng bài của dịch giả, hãy cùng xem
 Từ phần \eqref{sec:interest}, chúng ta thấy rằng số lượng comment so với số like là không đáng kể, trừ \textbf{askreddit}. Vì vậy, để xem xét xu hướng phản ứng, chúng ta chỉ nên tính số lượng like. Chú ý: Dữ liệu like sẽ bao gồm mọi cảm xúc khác như phẫn nộ, haha, v.v.
 
 \subsection{Thống kê tổng quát}
+Hình \eqref{fig:likesdistribution}.
+
 Tổng số like: 19976881.
 
 Số like trung bình mỗi post: 873.54
@@ -259,7 +261,7 @@ Có ít hơn 5\% số bài viết đạt 4000 like trở lên, nên để khảo
     \caption{Mô hình phân bố like}
     \label{fig:fitlikesdistribution}
 \end{figure}
-Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507 \times 10^{-24} < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
+Dễ thấy thông thường like tập trung ở 100-200 rồi giảm dần. Mô hình hóa phân bố này (hình \eqref{fig:fitlikesdistribution}) cho ta nhiều lựa chọn ban đầu: exponential, gamma, lognormal. Kết hợp với test Kolmogorov-Smirnov, chúng ta thấy exponential và lognormal là hợp nhất. Mặt khác, exponential không tạo ra một "đỉnh" núi ở giữa phân bố như lognormal. Cho nên chúng ta sẽ chọn mô hình lognormal với $p-value = 8.85521235143507 \times 10^{-24} < 1\%$, bất chấp $p-value$ của exponential nhỏ hơn.
 
 \subsection{Theo giờ đăng}
 \subsubsection{Tổng thể}
@@ -278,7 +280,7 @@ Trái ngược với xu hướng đăng bài, các bài đăng vào khoảng 4 �
     Nên dàn xếp đăng bài vào giờ sáng để tránh chen chân nhau.
 \end{remark}
 \subsubsection{Đối với các sub nổi nhất}
-Chúng ta sẽ tiếp tục mổ xẻ mức tương tác đối với từng sub nổi nhất.
+Chúng ta sẽ tiếp tục mổ xẻ mức tương tác đối với từng sub nổi nhất. (Hình \eqref{fig:meanlikesweekdayhourpersub})
 \begin{figure}[!h]
     \centering
     \includegraphics[width=\textwidth]{img/MeanLikesWeekdayHourPerSub.png}
@@ -295,7 +297,7 @@ Mỗi sub còn lại ít nhiều gì cũng có số like tương đồng bất k
 \section{Dịch giả RedditVN}
 Cùng điểm một số số liệu thống kê về những chú kiến thợ của RedditVN.
 \subsection{Thống kê tổng quát}
-Tổng số dịch giả: 2458.
+Tổng số dịch giả: 2457.
 
 Mỗi dịch giả trung bình dịch 9 bài.
 
@@ -308,11 +310,11 @@ Xét bình quân, dịch giả được cưng yêu nhất: Phạm Bảo Hưng, v
 Địa chỉ Facebook: \href{https://facebook.com/100004271236056}{https://facebook.com/100004271236056}.
 
 \begin{itemize}
-    \item 498 dịch giả (20.26\%) có 10 bài dịch trở lên.
-    \item 259 dịch giả (10.54\%) có 20 bài dịch trở lên.
-    \item 97 dịch giả (3.95\%) có 50 bài dịch trở lên.
-    \item 29 dịch giả (1.18\%) có 100 bài dịch trở lên.
-    \item 6 dịch giả (0.24\%) có 200 bài dịch trở lên.
+    \item 498 dịch giả (20,27\%) có 10 bài dịch trở lên.
+    \item 259 dịch giả (10,54\%) có 20 bài dịch trở lên.
+    \item 97 dịch giả (3,95\%) có 50 bài dịch trở lên.
+    \item 29 dịch giả (1,18\%) có 100 bài dịch trở lên.
+    \item 6 dịch giả (0,24\%) có 200 bài dịch trở lên.
 \end{itemize}
 
 Có gần 80\% dịch giả có dưới 10 bài dịch nên mô hình thống kê là không cần thiết.
@@ -322,11 +324,11 @@ Chúng ta cùng xem các dịch giả có xu hướng chọn bài như thế nà
 
 Ở đây, chúng ta giả sử mỗi dòng trong bảng dữ liệu chỉ dịch một submission. Tất nhiên vẫn có những bài tổng hợp vài submission nhưng hiếm. Thật vậy, trong 22869 bài, chỉ có 534 bài đính kèm 2 link Reddit trở lên, chiếm 2,34\%: không đáng kể.
 
-Quay trở lại vấn đề. Mỗi submission trung bình có 20640 karma và 1517 bình luận. Tỉ lệ là 13,61 karma trên một bình luận. Như vậy, chúng ta chỉ cần lấy số karma làm đại diện cho độ nổi của một submission.
+Quay trở lại vấn đề. Mỗi submission trung bình có 20643 karma và 1517 bình luận. Tỉ lệ là 13,60 karma trên một bình luận. Như vậy, chúng ta chỉ cần lấy số karma làm đại diện cho độ nổi của một submission.
 
 Ngoài ra, có 9 bài (tức 0.04\% tổng số) có thời gian đăng submission sau thời gian đăng bài dịch. Có nhiều lý do: người đăng đăng trên group Facebook trước rồi đăng lên r/RedditVN hoặc r/hmm để hợp lệ hóa; sai id; bài trên reddit bị chuyển. Vì số lượng hiếm, chúng ta sẽ loại bỏ những trường hợp này trước khi phân tích. Do đó, chúng ta có 22860 mẫu để thống kê.
 
-Trên tiêu chí độ cũ: lâu nhất là 3455 ngày (khoảng 9 năm).
+Trên tiêu chí độ cũ (hình \eqref{fig:delaysdistribution}): lâu nhất là 3455 ngày (khoảng 9 năm).
 
 \href{https://www.facebook.com/groups/redditvietnam/permalink/640963659634373}{https://www.facebook.com/groups/redditvietnam/permalink/\\640963659634373}
 
@@ -353,16 +355,16 @@ Gần một nửa số submission được dịch trong vòng 1 ngày kể từ 
 
 Tỉ lệ chính xác:
 \begin{itemize}
-    \item 11994 submission (52.47\%) được dịch sau 1 ngày.
-    \item 7841 submission (34.30\%) được dịch sau 1 tuần.
-    \item 6326 submission (27.67\%) được dịch sau 30 ngà (1 tháng).
-    \item 4308 submission (18.85\%) được dịch sau 180 ngày (nửa năm).
-    \item 3140 submission (13.74\%) được dịch sau 360 ngày (1 năm).
-    \item 2007 submission (8.78\%) được dịch sau 720 ngày (2 năm).
-    \item 397 submission (1.74\%) được dịch sau 1800 ngày (5 năm).
+    \item 11990 submission (52,47\%) được dịch sau 1 ngày.
+    \item 7838 submission (34,30\%) được dịch sau 7 ngày (1 tuần).
+    \item 6323 submission (27,67\%) được dịch sau 30 ngày (1 tháng).
+    \item 4306 submission (18,84\%) được dịch sau 180 ngày (nửa năm).
+    \item 3139 submission (13,73\%) được dịch sau 360 ngày (1 năm).
+    \item 2007 submission (8,78\%) được dịch sau 720 ngày (2 năm).
+    \item 397 submission (1,74\%) được dịch sau 1800 ngày (5 năm).
 \end{itemize}
 
-Phóng to hình vẽ (hình \eqref{fig:interestcomparision2}, \eqref{fig:interestcomparision3}, \eqref{fig:interestcomparision4}), chúng ta có thể khẳng định xu hướng chủ yếu là chọn những bài mới ra hôm qua. Màu của khu vực này cũng đậm hơn, đồng nghĩa độc giả cũng ưa thích hơn.
+Phóng to hình \eqref{fig:interestcomparision1} (hình \eqref{fig:interestcomparision2}, \eqref{fig:interestcomparision3}, \eqref{fig:interestcomparision4}), chúng ta có thể khẳng định xu hướng chủ yếu là chọn những bài mới ra hôm qua. Màu của khu vực này cũng đậm hơn, đồng nghĩa độc giả cũng ưa thích hơn.
 \begin{figure}[!hb]
     \centering
     \includegraphics[width=\textwidth]{img/InterestComparision_1200D.png}
@@ -390,4 +392,16 @@ Phóng to hình vẽ (hình \eqref{fig:interestcomparision2}, \eqref{fig:interes
 \end{figure}
 
 Hình \eqref{fig:interestcomparision5} là phân tách của hình \eqref{fig:interestcomparision2}.
+
+\section{Kết luận}
+\begin{itemize}
+    \item Số bài viết trong group RedditVN tăng nhanh, trừ hai giai đoạn sụt giảm bất thường, nhưng mau chóng phục hồi.
+    \item Hầu hết nhân lực tập trung vào 7 sub (theo thứ tự giảm dần): \textbf{askreddit}, \textbf{nosleep}, \textbf{todayilearned}, \textbf{pics}, \textbf{writingprompts}, \textbf{funny} và \textbf{aww}.
+    \item \textbf{askreddit} được dịch nhiều nhất trong mọi sub, có tiềm năng thu hút bình luận cao nhất, và số like thu về dù ít nhưng ổn định bất kể giờ đăng.
+    \item Các sub "trực quan" dễ kiếm tương tác hơn "tường chữ". Vì thế cần phải dùng biết dùng hình ảnh đính kèm để thu hút người đọc.
+    \item \textbf{"Sub được dịch nhiều"} tương đương với \textbf{"bài sẽ nhiều tương tác"}.
+    \item Bài viết hay được đăng vào khung giờ đêm tới nửa khuya.
+    \item Group có tương tác lớn, và những bài đăng giờ sáng dễ được thích hơn.
+    \item Các dịch giả hay chọn bài mới nổi trên Reddit (có karma vài ngàn), và số like thu về sẽ nhiều hơn so với bài cũ.
+\end{itemize}
 \end{document}

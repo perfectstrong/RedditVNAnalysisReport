@@ -19,24 +19,26 @@ mpl.rcParams["ytick.labelsize"] = 14
 
 #%%
 ######################################################
-# import data and filter
+# import data
 infile = "20170101T000000-20190101T000000.csv"
 df = pd.read_csv(infile, encoding="utf-8", index_col=None, header=0, lineterminator="\n")
 totalUnfiltered = df.shape[0]
 print("Số bài viết tổng cộng: {:d}".format(totalUnfiltered))
-df.drop(df[df["r_created_utc"] == 0].index, inplace=True) # filter
-totalFiltered = df.shape[0]
-print("Số bài viết sau khi lọc: {:d}. Tương đương {:.2f}% tổng số bài.".format(totalFiltered, totalFiltered / totalUnfiltered * 100))
 
 ######################################################
-# define columns types
+# define columns types and filter
 df["r"] = df["r"].astype("category")
-df["user_raw_id"] = df["user_raw_id"].astype(str)
+df["user_raw_id"] = df["user_raw_id"].astype(np.int64)
+df["post_raw_id"] = df["post_raw_id"].astype(np.int64)
 # avoid case sensitive
 df["r"] = df["r"].str.lower()
 # time conversion
+df.drop(df[df["r_created_utc"] == 0].index, inplace=True) # filter
 df["created_time"]=pd.to_datetime(df["created_time"], format="%Y-%m-%dT%H:%M:%S.000Z", utc=True).dt.tz_convert("Asia/Ho_Chi_Minh")
 df["r_created_utc"]=pd.to_datetime(df["r_created_utc"], unit="s", utc=True).dt.tz_convert("Asia/Ho_Chi_Minh")
+df.drop(df[df["created_time"].dt.year == 2019].index, inplace=True) # filter
+totalFiltered = df.shape[0]
+print("Số bài viết sau khi lọc: {:d}. Tương đương {:.2f}% tổng số bài.".format(totalFiltered, totalFiltered / totalUnfiltered * 100))
 
 ######################################################
 # determine week day of post
@@ -61,7 +63,7 @@ dfWeekdayHourPerSub = df.pivot_table(index=["r", df["created_time"].dt.hour], co
 
 ######################################################
 # translators stats
-translators = df[["user_raw_id", "user_name"]]
+translators = df[["user_raw_id", "user_name"]].copy()
 translators.drop_duplicates(subset="user_raw_id", keep='first', inplace=True)
 translators.set_index("user_raw_id", inplace=True)
 translatorsStats = df.pivot_table(index="user_raw_id", values=["likes_count", "post_id"], aggfunc={"likes_count": [np.sum, np.mean], "post_id": [np.size, meanPostsPerWeek]}, fill_value=0)
@@ -99,6 +101,7 @@ ax1.set_ylabel("Số bài viết")
 ax2 = ax1.twinx()
 ax2.plot(monthLabels, allLikesByMonth, "b-", label="Like")
 ax2.set_ylabel("Số like")
+ax2.grid(False)
 fig.autofmt_xdate()
 handles, labels = [],[]
 for ax in fig.axes:
@@ -139,7 +142,7 @@ plt.title("Những Subreddit nhiều bài dịch nhất")
 plt.xlabel("Số bài được dịch")
 plt.yticks(y, rTop.index.tolist())
 for i in ax.patches:
-    ax.text(i.get_width() + .1, i.get_y() + 0.5, str(int(i.get_width())), color="black")
+    ax.text(i.get_width() + .1, i.get_y() + 0.5, str(int(i.get_width())), color="black", fontsize=14)
 ax.invert_yaxis()
 ax.grid(False)
 plt.show()
@@ -158,7 +161,7 @@ plt.yticks(yi, r.head(Ni).index.tolist())
 plt.ylabel("")
 for i, subreddit in enumerate(interests[0:Ni].index.tolist()):
     s = interests.loc[subreddit]["sum"]
-    ax.annotate(str(s), (s, i + .1), color="black")
+    ax.annotate(str(s), (s, i + .1), color="black", fontsize=14)
 ax.invert_yaxis()
 ax.grid(False)
 
@@ -182,6 +185,7 @@ N = 30
 for i in range(N):
     subreddit = interests.index[i]
     print("Trung bình một bài {:s} sẽ có {:.0f} like (cảm xúc) và {:.0f} bình luận.".format(subreddit, meanInterests.loc[subreddit]["likes_count"], meanInterests.loc[subreddit]["comments_count"]))
+#    print("{} & {:.0f} & {:.0f} \\\\\n\\hline".format(subreddit, meanInterests.loc[subreddit]["likes_count"], meanInterests.loc[subreddit]["comments_count"]))
 
 print("Còn trung bình toàn thể là {:.0f} like (cảm xúc) và {:.0f} bình luận.".format(df["likes_count"].mean(), df["comments_count"].mean()))
 
@@ -215,6 +219,7 @@ fig, ax = plt.subplots()
 im = ax.imshow(dfMeanLikesWeekdayHour, cmap="Reds", aspect="auto")
 ax.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 ax.set_xticklabels(vietnameseDaysOfWeek)
+ax.grid(False)
 plt.title("Like trung bình theo giờ đăng")
 plt.ylabel("Giờ")
 plt.xlabel("Thứ")
@@ -231,6 +236,7 @@ fig, ax = plt.subplots()
 im = ax.imshow(dfMeanPostsWeekdayHour, cmap="Reds", aspect="auto")
 ax.set_xticks(np.arange(len(vietnameseDaysOfWeek)))
 ax.set_xticklabels(vietnameseDaysOfWeek)
+ax.grid(False)
 plt.title("Số bài trung bình theo giờ đăng")
 plt.ylabel("Giờ")
 plt.xlabel("Thứ")
@@ -343,9 +349,9 @@ del sc, reducedLikescount, l, param, pdfFitted, fig, kstest
 # statistics of translators
 print("Tổng số dịch giả: {:d}".format(translators.size))
 print("Mỗi dịch giả trung bình dịch {:.0f} bài.".format(totalFiltered / translators.size))
-print("Dịch giả chăm chỉ nhất: {:s} (https://facebook.com/{:d}) với {:d} bài.".format(translators.loc[translatorsStats[('post_id', 'size')].idxmax()]["user_name"], translatorsStats[('post_id', 'size')].idxmax(), translatorsStats[('post_id', 'size')].max()))
-print("Dịch giả dễ thương nhất: {:s} (https://facebook.com/{:d}) với tổng cộng {:d} like.".format(translators.loc[translatorsStats[('likes_count', 'sum')].idxmax()]["user_name"], translatorsStats[('likes_count', 'sum')].idxmax(), translatorsStats[('likes_count', 'sum')].max()))
-print("Dịch giả hay được cưng yêu nhất: {:s} (https://facebook.com/{:d}) với trung bình {:.0f} like mỗi bài.".format(translators.loc[translatorsStats[('likes_count', 'mean')].idxmax()]["user_name"], translatorsStats[('likes_count', 'mean')].idxmax(), translatorsStats[('likes_count', 'mean')].max()))
+print("Dịch giả chăm chỉ nhất: {} (https://facebook.com/{}) với {} bài.".format(translators.loc[translatorsStats[('post_id', 'size')].idxmax()]["user_name"], translatorsStats[('post_id', 'size')].idxmax(), translatorsStats[('post_id', 'size')].max()))
+print("Dịch giả dễ thương nhất: {} (https://facebook.com/{}) với tổng cộng {} like.".format(translators.loc[translatorsStats[('likes_count', 'sum')].idxmax()]["user_name"], translatorsStats[('likes_count', 'sum')].idxmax(), translatorsStats[('likes_count', 'sum')].max()))
+print("Dịch giả hay được cưng yêu nhất: {} (https://facebook.com/{}) với trung bình {:.0f} like mỗi bài.".format(translators.loc[translatorsStats[('likes_count', 'mean')].idxmax()]["user_name"], translatorsStats[('likes_count', 'mean')].idxmax(), translatorsStats[('likes_count', 'mean')].max()))
 postscountMarkpoints = [10, 20, 50, 100, 200]
 for i in postscountMarkpoints:
     p = (translatorsStats[("post_id", "size")] >= i).sum()
@@ -393,10 +399,6 @@ sampleSize = len(dfChoices.index)
 for i in delays:
     p = (dfChoices["days_f"] >= i).sum()
     print("{:d} submission ({:.2%}) được dịch sau {:d} ngày.".format(p, p / sampleSize, i))
-# crop
-rScoreCrop = 100000
-daysFCrop = 7
-dfChoicesCrop = dfChoices[(dfChoices["r_score"] < rScoreCrop) & (dfChoices["days_f"] < daysFCrop)]
 
 # distribution of delays
 fig1, ax1 = plt.subplots()
@@ -417,26 +419,32 @@ fig2.colorbar(g2, ax=ax2)
 fig2.show()
 
 # cropped distribution of delays, karma and likes
-fig3, ax3 = plt.subplots()
-g3 = ax3.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["days_f"].values, c=dfChoicesCrop["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
-ax3.set_title("Tương tác của submission trên Reddit và RedditVN")
-ax3.set_xlabel("Karma trên Reddit")
-ax3.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
-fig3.colorbar(g3, ax=ax3)
-fig3.show()
+def plotCrop(rScoreCrop, daysFCrop):
+    dfChoicesCrop = dfChoices[(dfChoices["r_score"] < rScoreCrop) & (dfChoices["days_f"] < daysFCrop)]
+    fig3, ax3 = plt.subplots()
+    g3 = ax3.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["days_f"].values, c=dfChoicesCrop["likes_count"].values, cmap="YlOrBr", edgecolors="None", s=30, marker="o", alpha=0.7)
+    ax3.set_title("Tương tác của submission trên Reddit và RedditVN")
+    ax3.set_xlabel("Karma trên Reddit")
+    ax3.set_ylabel("Khoảng cách giữa bài dịch và bài gốc (ngày)")
+    fig3.colorbar(g3, ax=ax3)
+    fig3.show()
+    
+    # distribution of karma and likes
+    fig4 = plt.figure()
+    ax4 = fig4.add_subplot(121)
+    ax4.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
+    ax4.set_title("So sánh karma và like")
+    ax4.set_xlabel("Karma trên Reddit")
+    ax4.set_ylabel("Like trên Facebook")
+    ax5 = fig4.add_subplot(122)
+    ax5.scatter(dfChoicesCrop["days_f"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
+    ax5.set_title("So sánh độ trễ và like")
+    ax5.set_xlabel("Độ trễ")
+    ax5.set_ylabel("Like trên Facebook")
+    fig4.show()
 
-# distribution of karma and likes
-fig4 = plt.figure()
-ax4 = fig4.add_subplot(121)
-g4 = ax4.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
-ax4.set_title("So sánh karma và like")
-ax4.set_xlabel("Karma trên Reddit")
-ax4.set_ylabel("Like trên Facebook")
-ax5 = fig4.add_subplot(122)
-g5 = ax5.scatter(dfChoicesCrop["days_f"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
-ax5.set_title("So sánh độ trễ và like")
-ax5.set_xlabel("Độ trễ")
-ax5.set_ylabel("Like trên Facebook")
-fig4.show()
+plotCrop(100000, 1200)
+plotCrop(100000, 7)
+plotCrop(100000, 1)
 
-del irr, dfChoices, delays, sampleSize, i, p, fig1, ax1, bins, fig2, ax2, g2, rScoreCrop, daysFCrop, dfChoicesCrop, fig3, ax3, g3
+del irr, dfChoices, delays, sampleSize, i, p, fig1, ax1, bins, fig2, ax2, g2
