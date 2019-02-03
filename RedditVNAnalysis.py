@@ -432,6 +432,11 @@ g4 = ax4.scatter(dfChoicesCrop["r_score"].values, dfChoicesCrop["likes_count"].v
 ax4.set_title("So sánh karma và like")
 ax4.set_xlabel("Karma trên Reddit")
 ax4.set_ylabel("Like trên Facebook")
+ax5 = fig4.add_subplot(122)
+g5 = ax5.scatter(dfChoicesCrop["days_f"].values, dfChoicesCrop["likes_count"].values, alpha=0.7, marker=".")
+ax5.set_title("So sánh độ trễ và like")
+ax5.set_xlabel("Độ trễ")
+ax5.set_ylabel("Like trên Facebook")
 fig4.show()
 
 del irr, dfChoices, delays, sampleSize, i, p, fig1, ax1, bins, fig2, ax2, g2, rScoreCrop, daysFCrop, dfChoicesCrop, fig3, ax3, g3
